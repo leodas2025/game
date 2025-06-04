@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Love Proposal Game 💖</title>
+<style>
+  body, html {
+    margin:0; padding:0; height:100%;
+    background: #222;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+  #gameCanvas {
+    background: #333;
+    display: block;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #e91e63;
+  }
+  #finalMessage {
+    text-align: center;
+    font-size: 3em;
+    margin-top: 40px;
+    color: #e91e63;
+    font-weight: bold;
+    font-family: 'Pacifico', cursive;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<div id="finalMessage"></div>
+
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const player = {
+    x: 50,
+    y: 50,
+    size: 30,
+    color: '#e91e63',
+    speed: 5
+  };
+
+  const hearts = [
+    { x: 300, y: 50, size: 25, collected: false },
+    { x: 100, y: 300, size: 25, collected: false },
+    { x: 300, y: 300, size: 25, collected: false }
+  ];
+
+  let keys = {};
+
+  window.addEventListener('keydown', e => keys[e.key] = true);
+  window.addEventListener('keyup', e => keys[e.key] = false);
+
+  function rectsOverlap(r1, r2) {
+    return !(r2.x > r1.x + r1.size || 
+             r2.x + r2.size < r1.x || 
+             r2.y > r1.y + r1.size || 
+             r2.y + r2.size < r1.y);
+  }
+
+  function drawHeart(x, y, size, collected) {
+    if (collected) return;
+    ctx.fillStyle = '#ff3366';
+    ctx.beginPath();
+    ctx.moveTo(x + size/2, y + size/5);
+    ctx.bezierCurveTo(x + size/2, y, x, y, x, y + size/3);
+    ctx.bezierCurveTo(x, y + size*2/3, x + size/2, y + size*4/5, x + size/2, y + size);
+    ctx.bezierCurveTo(x + size/2, y + size*4/5, x + size, y + size*2/3, x + size, y + size/3);
+    ctx.bezierCurveTo(x + size, y, x + size/2, y, x + size/2, y + size/5);
+    ctx.fill();
+  }
+
+  function drawPlayer() {
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Arial';
+    ctx.fillText('❤', player.x + 5, player.y + 22);
+  }
+
+  function update() {
+    if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+    if (keys['ArrowDown'] && player.y + player.size < canvas.height) player.y += player.speed;
+    if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+    if (keys['ArrowRight'] && player.x + player.size < canvas.width) player.x += player.speed;
+
+    hearts.forEach(h => {
+      if (!h.collected && rectsOverlap(player, h)) h.collected = true;
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+    hearts.forEach(h => drawHeart(h.x, h.y, h.size, h.collected));
+  }
+
+  function allCollected() {
+    return hearts.every(h => h.collected);
+  }
+
+  function gameLoop() {
+    update();
+    draw();
+
+    if (allCollected()) {
+      document.getElementById('finalMessage').innerHTML = 
+        I ❤️ U<br>
+        Ashwathy.
+      ;
+      return; // Stop the game loop here
+    }
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  gameLoop();
+</script>
+
+</body>
+</html>
