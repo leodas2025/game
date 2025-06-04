@@ -1,10 +1,12 @@
-# game
-#  Game 
+# Love Proposal Game ЁЯТЦ
 
-A simple browser game made as a special.
+Move the square using arrow keys and collect all the hearts.
 
-## How to Play
+When you collect them all...
 
-- Use the arrow keys (↑ ↓ ← →) to move the pink square.
-- Collect all the hearts.
-- When all hearts are collected, the final message appears:
+```
+I тЭдя╕П U
+Ashwathy.
+```
+
+Made with тЭдя╕П
